@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>For u Kub Babe</title>
+
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="floating-hearts" id="floatingHearts"></div>
+    
+    <div class="container">
+        <div class="password-screen" id="passwordScreen">
+            <div class="heart">🔐</div>
+            <h1>Please Enter The Password</h1>
+            <div class="password-input">
+                <input type="password" id="passwordInput" placeholder="Password" maxlength="20">
+                <button class="yes-btn" onclick="checkPassword()">Enter ✨</button>
+            </div>
+            <p class="hint" id="passwordHint">💡 Hint: What date is it today?</p>
+        </div>
+
+        <div class="main-content hidden" id="mainContent">
+            <div class="heart">💖</div>
+            <h1>Qusetion</h1>
+            <p class="question">Could you be mine? 🥰</p>
+            <div class="buttons">
+                <button class="yes-btn" onclick="sayYes()">Yes! 💕</button>
+                <button class="no-btn" onclick="runAway()" id="noBtn">No! </button>
+            </div>
+        </div>
+        
+        <div class="success-message hidden" id="successMessage">
+            <div class="heart">💝</div>
+            <p class="question">yeahhhh 💕
+            Thank You For Making Me Be The Luckiest Man In The World! 🌟</p>
+        </div>
+    </div>
+    
+    <div class="confetti hidden" id="confetti"></div>
+
+    <script>
+        let noClickCount = 0;
+        const correctPassword = "29052025"; // เปลี่ยนรหัสผ่านตรงนี้
+        let wrongAttempts = 0;
+
+        const noResponses = [
+            "Are u sure? Think it agian!! 😊",
+            "Nahh...Try to press Yes button 🥺",
+            "You make me crying 😭",
+            "Yes plssss 🙏",
+            "Don't joking me 😂",
+            "Only! Yes! 💪"
+        ];
+
+        const passwordHints = [
+            "💡 Hint: What date is it today?",
+        ];
+        
+
+        function checkPassword() {
+            const input = document.getElementById('passwordInput');
+            const password = input.value.toLowerCase().trim();
+            const hintElement = document.getElementById('passwordHint');
+            
+            if (password === correctPassword) {
+                // รหัสถูก - เข้าสู่หน้าหลัก
+                document.getElementById('passwordScreen').classList.add('hidden');
+                document.getElementById('mainContent').classList.remove('hidden');
+                
+                // เอฟเฟกต์พิเศษ
+                document.querySelector('.container').style.animation = 'celebration 0.8s ease-out';
+            } else {
+                // รหัสผิด
+                wrongAttempts++;
+                input.value = '';
+                
+                // แสดงข้อความผิด
+                let errorMsg = document.getElementById('errorMessage');
+                if (!errorMsg) {
+                    errorMsg = document.createElement('p');
+                    errorMsg.id = 'errorMessage';
+                    errorMsg.className = 'error-message';
+                    document.querySelector('.password-input').appendChild(errorMsg);
+                }
+                
+                if (wrongAttempts <= 3) {
+                    errorMsg.textContent = `Try Again! (${wrongAttempts}/3) 😅`;
+                    
+                    // เปลี่ยนคำใบ้
+                    if (wrongAttempts < passwordHints.length) {
+                        hintElement.textContent = passwordHints[wrongAttempts];
+                    }
+                } else {
+                    errorMsg.textContent = "Try too much! Wait a moment. 😝";
+                    input.disabled = true;
+                    setTimeout(() => {
+                        input.disabled = false;
+                        errorMsg.textContent = "";
+                        wrongAttempts = 0;
+                        hintElement.textContent = passwordHints[0];
+                    }, 5000);
+                }
+                
+                // เอฟเฟกต์สั่น
+                input.style.animation = 'none';
+                setTimeout(() => {
+                    input.style.animation = 'shake 0.5s ease-in-out';
+                }, 10);
+            }
+        }
+        
+        // Enter key สำหรับช่องรหัสผ่าน
+        document.addEventListener('DOMContentLoaded', function() {
+            const passwordInput = document.getElementById('passwordInput');
+            passwordInput.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    checkPassword();
+                }
+            });
+        });
+
+
+        // สร้างหัวใจที่ลอยอยู่เบื้องหลัง
+        function createFloatingHeart() {
+            const heart = document.createElement('div');
+            heart.className = 'floating-heart';
+            heart.innerHTML = '💕';
+            heart.style.left = Math.random() * 100 + '%';
+            heart.style.animationDelay = Math.random() * 6 + 's';
+            heart.style.animationDuration = (6 + Math.random() * 4) + 's';
+            document.getElementById('floatingHearts').appendChild(heart);
+            
+            setTimeout(() => {
+                heart.remove();
+            }, 10000);
+        }
+        
+        // สร้างหัวใจใหม่ทุก 2 วินาที
+        setInterval(createFloatingHeart, 2000);
+        
+        function sayYes() {
+            document.getElementById('mainContent').classList.add('hidden');
+            document.getElementById('successMessage').classList.remove('hidden');
+            createConfetti();
+            playSuccessAnimation();
+        }
+        
+        function runAway() {
+            const noBtn = document.getElementById('noBtn');
+            const question = document.querySelector('.question');
+            
+            noClickCount++;
+            
+            if (noClickCount < noResponses.length) {
+                question.textContent = noResponses[noClickCount - 1];
+                
+                // ปุ่มวิ่งหนี
+                const randomX = Math.random() * (window.innerWidth - 200);
+                const randomY = Math.random() * (window.innerHeight - 100);
+                
+                noBtn.style.position = 'fixed';
+                noBtn.style.left = randomX + 'px';
+                noBtn.style.top = randomY + 'px';
+                noBtn.style.zIndex = '1000';
+                
+                // เอฟเฟกต์สั่น
+                noBtn.style.animation = 'none';
+                setTimeout(() => {
+                    noBtn.style.animation = 'shake 0.5s ease-in-out';
+                }, 10);
+                
+            } else {
+                // ถ้ากดเยอะเกินไป ให้ปุ่ม "ไม่" หายไปและบังคับเลือก "ใช่"
+                noBtn.style.display = 'none';
+                question.textContent = "There's no choice! You have to be my girlfriend! 😤💕";
+            }
+        }
+        
+        function createConfetti() {
+            const confettiContainer = document.getElementById('confetti');
+            confettiContainer.classList.remove('hidden');
+            
+            const colors = ['#ff6b9d', '#ff8a80', '#64b5f6', '#42a5f5', '#81c784', '#ffb74d'];
+            
+            for (let i = 0; i < 100; i++) {
+                setTimeout(() => {
+                    const confetti = document.createElement('div');
+                    confetti.className = 'confetti-piece';
+                    confetti.style.left = Math.random() * 100 + '%';
+                    confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+                    confetti.style.animationDelay = Math.random() * 3 + 's';
+                    confetti.style.animationDuration = (2 + Math.random() * 3) + 's';
+                    confettiContainer.appendChild(confetti);
+                    
+                    setTimeout(() => {
+                        confetti.remove();
+                    }, 5000);
+                }, i * 50);
+            }
+            
+            setTimeout(() => {
+                confettiContainer.classList.add('hidden');
+            }, 5000);
+        }
+        
+        function playSuccessAnimation() {
+            // เพิ่มเสียงเซลิเบรชั่น (ถ้ามี)
+            // และเอฟเฟกต์อื่นๆ
+        }
+        
+        function restart() {
+            location.reload();
+        }
+        
+        // เพิ่ม CSS สำหรับ animation สั่น
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes shake {
+                0%, 100% { transform: translateX(0); }
+                25% { transform: translateX(-10px); }
+                75% { transform: translateX(10px); }
+            }
+        `;
+        document.head.appendChild(style);
+        
+        // สร้างหัวใจแรก
+        createFloatingHeart();
+    </script>
+</body>
+</html>
